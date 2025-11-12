@@ -1,0 +1,1529 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>赛博跑酷QTE玩法验证</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0c0c2e, #1a1a3e);
+            color: #e0e0ff;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            border-bottom: 2px solid #3a3a7a;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #6ee2ff;
+            text-shadow: 0 0 10px rgba(110, 226, 255, 0.5);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #a0a0ff;
+        }
+        
+        .game-area {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        .section {
+            background: rgba(30, 30, 60, 0.7);
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid #4a4a8a;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #8a8aff;
+            border-bottom: 1px solid #4a4a8a;
+            padding-bottom: 8px;
+        }
+        
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .input-card {
+            background: rgba(40, 40, 80, 0.8);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s;
+            border: 1px solid #5a5aaa;
+        }
+        
+        .input-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(90, 90, 170, 0.3);
+        }
+        
+        .key-display {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #6ee2ff;
+            margin: 10px 0;
+            text-shadow: 0 0 8px rgba(110, 226, 255, 0.7);
+        }
+        
+        .action-name {
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+        
+        .action-desc {
+            font-size: 0.9rem;
+            color: #b0b0ff;
+        }
+        
+        .output-area {
+            min-height: 200px;
+            background: rgba(20, 20, 40, 0.8);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            border: 1px solid #4a4a8a;
+            font-family: monospace;
+            overflow-y: auto;
+            max-height: 300px;
+        }
+        
+        .log-entry {
+            padding: 5px 0;
+            border-bottom: 1px solid #3a3a6a;
+        }
+        
+        .log-time {
+            color: #8a8aff;
+            margin-right: 10px;
+        }
+        
+        .log-success {
+            color: #6eff8a;
+        }
+        
+        .log-failure {
+            color: #ff6e6e;
+        }
+        
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            background: rgba(30, 30, 60, 0.7);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #4a4a8a;
+        }
+        
+        .status-item {
+            text-align: center;
+        }
+        
+        .status-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #6ee2ff;
+        }
+        
+        .status-label {
+            font-size: 0.9rem;
+            color: #a0a0ff;
+        }
+        
+        .qte-display {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(20, 20, 40, 0.8);
+            border-radius: 10px;
+            border: 2px solid #5a5aaa;
+        }
+        
+        .qte-prompt {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .qte-timer {
+            width: 100%;
+            height: 10px;
+            background: rgba(60, 60, 100, 0.5);
+            border-radius: 5px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        
+        .qte-timer-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #6ee2ff, #8a8aff);
+            width: 100%;
+            transition: width 0.1s linear;
+        }
+        
+        .qte-requirements {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .qte-requirement {
+            padding: 5px 10px;
+            background: rgba(80, 80, 160, 0.7);
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .qte-mash-counter {
+            font-size: 1.2rem;
+            margin: 10px 0;
+            color: #ffcc66;
+        }
+        
+        .qte-hold-progress {
+            width: 80%;
+            height: 10px;
+            background: rgba(60, 60, 100, 0.5);
+            border-radius: 5px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        
+        .qte-hold-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ffcc66, #ffaa33);
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+        
+        .qte-combo-sequence {
+            display: flex;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        
+        .qte-combo-key {
+            padding: 8px 12px;
+            background: rgba(80, 80, 160, 0.7);
+            border-radius: 5px;
+            font-weight: bold;
+            min-width: 40px;
+            text-align: center;
+        }
+        
+        .qte-combo-key.active {
+            background: rgba(110, 226, 255, 0.8);
+            color: #0c0c2e;
+        }
+        
+        .qte-combo-key.completed {
+            background: rgba(110, 255, 138, 0.8);
+            color: #0c0c2e;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        button {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #6ee2ff, #8a8aff);
+            border: none;
+            border-radius: 5px;
+            color: #0c0c2e;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(110, 226, 255, 0.4);
+        }
+        
+        button:disabled {
+            background: #5a5a8a;
+            color: #8a8aaa;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .level-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: rgba(40, 40, 80, 0.7);
+            border-radius: 8px;
+        }
+        
+        .level-stat {
+            text-align: center;
+        }
+        
+        .level-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #ffcc66;
+        }
+        
+        .level-label {
+            font-size: 0.9rem;
+            color: #a0a0ff;
+        }
+        
+        .enemy-display, .trap-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 15px 0;
+            padding: 15px;
+            background: rgba(40, 40, 80, 0.7);
+            border-radius: 10px;
+            border: 1px solid #5a5aaa;
+        }
+        
+        .enemy-icon, .trap-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+        
+        .enemy-icon {
+            background: linear-gradient(135deg, #ff6e6e, #ff3333);
+            box-shadow: 0 0 10px rgba(255, 110, 110, 0.5);
+        }
+        
+        .trap-icon {
+            background: linear-gradient(135deg, #ffcc66, #ffaa33);
+            box-shadow: 0 0 10px rgba(255, 204, 102, 0.5);
+        }
+        
+        .enemy-info, .trap-info {
+            flex: 1;
+        }
+        
+        .enemy-name, .trap-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        
+        .enemy-name {
+            color: #ff9999;
+        }
+        
+        .trap-name {
+            color: #ffcc66;
+        }
+        
+        .enemy-desc, .trap-desc {
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+        
+        .enemy-desc {
+            color: #ccaaaa;
+        }
+        
+        .trap-desc {
+            color: #ccbb99;
+        }
+        
+        .enemy-health {
+            width: 100px;
+            height: 10px;
+            background: rgba(60, 60, 100, 0.5);
+            border-radius: 5px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+        
+        .enemy-health-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6e6e, #ff3333);
+            width: 100%;
+            transition: width 0.3s;
+        }
+        
+        .environment-effects {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .environment-effect {
+            padding: 5px 10px;
+            background: rgba(80, 80, 160, 0.7);
+            border-radius: 5px;
+            font-size: 0.8rem;
+        }
+        
+        .combo-counter {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(30, 30, 60, 0.8);
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid #5a5aaa;
+            text-align: center;
+            z-index: 100;
+        }
+        
+        .combo-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #6ee2ff;
+        }
+        
+        .combo-label {
+            font-size: 0.8rem;
+            color: #a0a0ff;
+        }
+        
+        .combo-multiplier {
+            color: #ffcc66;
+            font-weight: bold;
+        }
+        
+        .stats-panel {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px solid #3a3a6a;
+        }
+        
+        .stat-name {
+            color: #a0a0ff;
+        }
+        
+        .stat-value {
+            color: #6ee2ff;
+            font-weight: bold;
+        }
+        
+        .damage-popup {
+            position: absolute;
+            color: #ff6e6e;
+            font-weight: bold;
+            font-size: 1.2rem;
+            animation: floatUp 1s ease-out forwards;
+            pointer-events: none;
+        }
+        
+        @keyframes floatUp {
+            0% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+        }
+        
+        .achievement-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(30, 30, 60, 0.95);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #ffcc66;
+            text-align: center;
+            z-index: 1000;
+            box-shadow: 0 0 20px rgba(255, 204, 102, 0.5);
+            animation: achievementAppear 0.5s ease-out;
+        }
+        
+        @keyframes achievementAppear {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.8);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+        
+        .achievement-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            color: #ffcc66;
+        }
+        
+        .achievement-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ffcc66;
+            margin-bottom: 5px;
+        }
+        
+        .achievement-desc {
+            font-size: 1rem;
+            color: #e0e0ff;
+        }
+        
+        .instructions {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(40, 40, 80, 0.7);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: #b0b0ff;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>赛博跑酷QTE玩法验证</h1>
+            <div class="subtitle">核心逻辑展示</div>
+        </header>
+        
+        <div class="combo-counter">
+            <div class="combo-value" id="combo-count">0</div>
+            <div class="combo-label">连击</div>
+            <div class="combo-multiplier" id="combo-multiplier">x1.0</div>
+        </div>
+        
+        <div class="game-area">
+            <div class="status-bar">
+                <div class="status-item">
+                    <div class="status-value" id="score">0</div>
+                    <div class="status-label">分数</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-value" id="health">3</div>
+                    <div class="status-label">生命值</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-value" id="time">60</div>
+                    <div class="status-label">剩余时间</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-value" id="skill-uses">0</div>
+                    <div class="status-label">技能使用</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-value" id="level">1</div>
+                    <div class="status-label">关卡</div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="level-info">
+                    <div class="level-stat">
+                        <div class="level-value" id="qte-count">0</div>
+                        <div class="level-label">QTE总数</div>
+                    </div>
+                    <div class="level-stat">
+                        <div class="level-value" id="qte-completed">0</div>
+                        <div class="level-label">已完成</div>
+                    </div>
+                    <div class="level-stat">
+                        <div class="level-value" id="qte-type">-</div>
+                        <div class="level-label">当前类型</div>
+                    </div>
+                    <div class="level-stat">
+                        <div class="level-value" id="qte-difficulty">简单</div>
+                        <div class="level-label">难度</div>
+                    </div>
+                </div>
+                
+                <div id="environment-display">
+                    <!-- 这里将显示敌人或陷阱 -->
+                </div>
+                
+                <h2 class="section-title">当前QTE挑战</h2>
+                <div class="qte-display" id="qte-display">
+                    <div class="qte-prompt" id="qte-prompt">等待QTE生成...</div>
+                    <div class="qte-timer">
+                        <div class="qte-timer-fill" id="qte-timer-fill"></div>
+                    </div>
+                    <div id="qte-specific-display">
+                        <!-- 这里将根据QTE类型显示不同的UI -->
+                    </div>
+                </div>
+                
+                <div class="stats-panel">
+                    <div class="stat-item">
+                        <span class="stat-name">敌人击败:</span>
+                        <span class="stat-value" id="enemies-defeated">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-name">陷阱通过:</span>
+                        <span class="stat-value" id="traps-passed">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-name">机关激活:</span>
+                        <span class="stat-value" id="mechanisms-activated">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-name">最高连击:</span>
+                        <span class="stat-value" id="max-combo">0</span>
+                    </div>
+                </div>
+                
+                <div class="controls">
+                    <button id="start-level">开始关卡</button>
+                    <button id="next-level" disabled>下一关卡</button>
+                    <button id="use-skill">使用子弹时间 (剩余: <span id="skill-count">3</span>)</button>
+                </div>
+                
+                <div class="instructions">
+                    <strong>游戏说明:</strong> 使用键盘按键完成QTE挑战。空格键跳跃，S键滑铲，J键攻击，D键冲刺，Shift键使用子弹时间技能。注意：空格键不会导致页面滚动。
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">QTE输入系统</h2>
+                <div class="input-grid" id="input-grid">
+                    <!-- 输入卡片将通过JavaScript动态生成 -->
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">游戏输出日志</h2>
+                <div class="output-area" id="output-log">
+                    <!-- 日志条目将通过JavaScript动态添加 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 输入配置数据
+        const inputConfig = [
+            {
+                key: 'Space',
+                name: '跳跃',
+                description: '躲避地面陷阱和障碍物',
+                type: 'action'
+            },
+            {
+                key: 'S',
+                name: '滑铲',
+                description: '躲避低空障碍和攻击',
+                type: 'action'
+            },
+            {
+                key: 'J',
+                name: '攻击',
+                description: '击败敌人和破坏障碍',
+                type: 'action'
+            },
+            {
+                key: 'D',
+                name: '冲刺',
+                description: '快速移动躲避危险',
+                type: 'action'
+            },
+            {
+                key: 'Shift',
+                name: '子弹时间',
+                description: '减慢时间，更容易完成QTE',
+                type: 'skill'
+            }
+        ];
+
+        // QTE类型定义
+        const qteTypes = {
+            CLICK: {
+                name: '单击',
+                timeWindow: { min: 1.0, max: 1.5 },
+                description: '在时间窗口内单次按下正确按键',
+                weight: 40
+            },
+            MASH: {
+                name: '连打',
+                timeWindow: { min: 2.0, max: 2.5 },
+                description: '在时间窗口内快速按下指定次数',
+                weight: 25,
+                requirements: { min: 5, max: 7 }
+            },
+            HOLD: {
+                name: '长按',
+                timeWindow: { min: 1.5, max: 2.0 },
+                description: '持续按住按键直到进度条填满',
+                weight: 20,
+                requirements: { min: 0.8, max: 1.2 }
+            },
+            COMBO: {
+                name: '组合键',
+                timeWindow: { min: 2.5, max: 3.0 },
+                description: '按顺序按下多个按键',
+                weight: 15,
+                requirements: { min: 2, max: 3 }
+            }
+        };
+
+        // 敌人类型定义
+        const enemyTypes = {
+            DRONE: {
+                name: '小型无人机',
+                health: 1,
+                qteType: 'CLICK',
+                score: 10,
+                description: '基础的空中单位，需要快速反应',
+                icon: '🚁'
+            },
+            ROBOT: {
+                name: '防御机器人',
+                health: 2,
+                qteType: 'MASH',
+                score: 20,
+                description: '坚固的防御单位，需要连续攻击',
+                icon: '🤖'
+            },
+            GUARD: {
+                name: '精英守卫',
+                health: 3,
+                qteType: 'COMBO',
+                score: 30,
+                description: '高级战斗单位，需要精确的连招',
+                icon: '💂'
+            }
+        };
+
+        // 陷阱类型定义
+        const trapTypes = {
+            LASER: {
+                name: '激光栅栏',
+                qteType: 'CLICK',
+                damage: 1,
+                description: '需要跳跃躲避的水平激光',
+                icon: '🔫'
+            },
+            BLADE: {
+                name: '旋转刀刃',
+                qteType: 'HOLD',
+                damage: 1,
+                description: '需要滑铲通过的旋转刀刃',
+                icon: '⚔️'
+            },
+            ELECTRIC: {
+                name: '电击地板',
+                qteType: 'CLICK',
+                damage: 1,
+                description: '需要跳跃躲避的带电地板',
+                icon: '⚡'
+            }
+        };
+
+        // 机关类型定义
+        const mechanismTypes = {
+            DOOR: {
+                name: '电子门',
+                qteType: 'COMBO',
+                description: '需要输入正确序列才能开启的门',
+                icon: '🚪'
+            },
+            BRIDGE: {
+                name: '伸缩桥',
+                qteType: 'HOLD',
+                description: '需要持续激活才能通过的桥',
+                icon: '🌉'
+            },
+            TURRET: {
+                name: '自动炮塔',
+                qteType: 'MASH',
+                description: '需要快速输入才能关闭的炮塔',
+                icon: '🔫'
+            }
+        };
+
+        // 成就系统
+        const achievements = {
+            FIRST_BLOOD: {
+                name: '第一滴血',
+                description: '击败第一个敌人',
+                icon: '🩸',
+                condition: (stats) => stats.enemiesDefeated >= 1
+            },
+            COMBO_MASTER: {
+                name: '连击大师',
+                description: '达到10连击',
+                icon: '🔥',
+                condition: (stats) => stats.maxCombo >= 10
+            },
+            PERFECT_RUN: {
+                name: '完美通关',
+                description: '无伤完成一个关卡',
+                icon: '⭐',
+                condition: (stats) => stats.perfectRuns >= 1
+            },
+            QTE_MASTER: {
+                name: 'QTE大师',
+                description: '完成100个QTE',
+                icon: '🎮',
+                condition: (stats) => stats.totalQTECompleted >= 100
+            }
+        };
+
+        // 游戏状态
+        const gameState = {
+            score: 0,
+            health: 3,
+            time: 60,
+            skillUses: 0,
+            active: false,
+            level: 1,
+            currentQTE: null,
+            qteCompleted: 0,
+            qteTotal: 0,
+            bulletTimeActive: false,
+            bulletTimeRemaining: 3,
+            combo: 0,
+            maxCombo: 0,
+            enemiesDefeated: 0,
+            trapsPassed: 0,
+            mechanismsActivated: 0,
+            totalQTECompleted: 0,
+            perfectRuns: 0,
+            currentEnvironment: null,
+            unlockedAchievements: new Set()
+        };
+
+        // QTE状态
+        let qteState = {
+            type: null,
+            requiredKey: null,
+            requiredKeys: [],
+            timeWindow: 0,
+            timeRemaining: 0,
+            timer: null,
+            mashCount: 0,
+            mashTarget: 0,
+            holdProgress: 0,
+            holdTarget: 0,
+            holdInterval: null,
+            comboIndex: 0,
+            comboSequence: []
+        };
+
+        // 初始化函数
+        function initializeGame() {
+            renderInputCards();
+            updateStatusDisplay();
+            setupEventListeners();
+            updateComboDisplay();
+            
+            logMessage("游戏已初始化，准备开始...", "system");
+        }
+
+        // 渲染输入卡片
+        function renderInputCards() {
+            const inputGrid = document.getElementById('input-grid');
+            inputGrid.innerHTML = '';
+            
+            inputConfig.forEach(input => {
+                const card = document.createElement('div');
+                card.className = 'input-card';
+                card.dataset.key = input.key;
+                
+                card.innerHTML = `
+                    <div class="action-name">${input.name}</div>
+                    <div class="key-display">${input.key}</div>
+                    <div class="action-desc">${input.description}</div>
+                `;
+                
+                inputGrid.appendChild(card);
+            });
+        }
+
+        // 设置事件监听器
+        function setupEventListeners() {
+            document.addEventListener('keydown', handleKeyPress);
+            document.getElementById('start-level').addEventListener('click', startLevel);
+            document.getElementById('next-level').addEventListener('click', nextLevel);
+            document.getElementById('use-skill').addEventListener('click', useBulletTime);
+        }
+
+        // 处理按键输入 - 修复空格键滚动问题
+        function handleKeyPress(event) {
+            // 阻止空格键的默认行为（页面滚动）
+            if (event.key === ' ') {
+                event.preventDefault();
+            }
+            
+            if (!gameState.active || !qteState.type) return;
+            
+            const key = event.key;
+            let keyName = '';
+            
+            // 标准化按键名称
+            switch(key) {
+                case ' ':
+                    keyName = 'Space';
+                    break;
+                case 'Shift':
+                    keyName = 'Shift';
+                    // 不处理Shift键作为QTE输入
+                    return;
+                default:
+                    keyName = key.toUpperCase();
+            }
+            
+            // 处理技能按键
+            if (keyName === 'Shift') {
+                useBulletTime();
+                return;
+            }
+            
+            // 处理QTE输入
+            processQTEInput(keyName);
+            
+            // 高亮显示被按下的输入卡片
+            highlightInputCard(keyName);
+        }
+
+        // 更新状态显示
+        function updateStatusDisplay() {
+            document.getElementById('score').textContent = gameState.score;
+            document.getElementById('health').textContent = gameState.health;
+            document.getElementById('time').textContent = gameState.time;
+            document.getElementById('skill-uses').textContent = gameState.skillUses;
+            document.getElementById('level').textContent = gameState.level;
+            document.getElementById('qte-completed').textContent = gameState.qteCompleted;
+            document.getElementById('qte-count').textContent = gameState.qteTotal;
+            document.getElementById('skill-count').textContent = 3 - gameState.skillUses;
+            document.getElementById('enemies-defeated').textContent = gameState.enemiesDefeated;
+            document.getElementById('traps-passed').textContent = gameState.trapsPassed;
+            document.getElementById('mechanisms-activated').textContent = gameState.mechanismsActivated;
+            document.getElementById('max-combo').textContent = gameState.maxCombo;
+        }
+
+        // 更新连击显示
+        function updateComboDisplay() {
+            document.getElementById('combo-count').textContent = gameState.combo;
+            const multiplier = 1 + (gameState.combo * 0.1);
+            document.getElementById('combo-multiplier').textContent = `x${multiplier.toFixed(1)}`;
+        }
+
+        // 开始关卡
+        function startLevel() {
+            if (gameState.active) return;
+            
+            gameState.active = true;
+            gameState.qteCompleted = 0;
+            gameState.qteTotal = calculateQteCountForLevel();
+            gameState.combo = 0;
+            
+            document.getElementById('start-level').disabled = true;
+            document.getElementById('next-level').disabled = true;
+            
+            logMessage(`第 ${gameState.level} 关卡开始！需要完成 ${gameState.qteTotal} 个QTE`, "system");
+            
+            generateNextQTE();
+        }
+
+        // 计算当前关卡QTE数量
+        function calculateQteCountForLevel() {
+            return 10 + (gameState.level * 2);
+        }
+
+        // 生成下一个QTE
+        function generateNextQTE() {
+            if (gameState.qteCompleted >= gameState.qteTotal) {
+                levelComplete();
+                return;
+            }
+            
+            // 清除之前的QTE状态
+            clearQTEState();
+            
+            // 随机选择环境类型
+            const environmentType = selectRandomEnvironmentType();
+            gameState.currentEnvironment = environmentType;
+            
+            // 根据环境类型选择QTE类型
+            const qteType = qteTypes[environmentType.qteType];
+            qteState.type = qteType;
+            
+            // 设置时间窗口
+            const timeWindow = getRandomInRange(qteType.timeWindow.min, qteType.timeWindow.max);
+            qteState.timeWindow = timeWindow;
+            qteState.timeRemaining = timeWindow;
+            
+            // 根据环境类型和QTE类型设置特定参数
+            setupEnvironmentQTE(environmentType, qteType);
+            
+            // 更新UI显示
+            updateEnvironmentDisplay(environmentType);
+            updateQteDisplay();
+            
+            // 开始计时
+            startQTETimer();
+            
+            logMessage(`遇到${environmentType.name}! ${getEnvironmentDescription(environmentType)}`, "system");
+        }
+
+        // 随机选择环境类型
+        function selectRandomEnvironmentType() {
+            const environmentTypes = [...Object.values(enemyTypes), ...Object.values(trapTypes), ...Object.values(mechanismTypes)];
+            return environmentTypes[Math.floor(Math.random() * environmentTypes.length)];
+        }
+
+        // 根据环境类型设置QTE
+        function setupEnvironmentQTE(environment, qteType) {
+            const actionKeys = inputConfig.filter(input => input.type === 'action').map(input => input.key);
+            
+            switch(qteType.name) {
+                case '单击':
+                    qteState.requiredKey = actionKeys[Math.floor(Math.random() * actionKeys.length)];
+                    document.getElementById('qte-type').textContent = '单击';
+                    document.getElementById('qte-difficulty').textContent = '简单';
+                    break;
+                    
+                case '连打':
+                    qteState.requiredKey = actionKeys[Math.floor(Math.random() * actionKeys.length)];
+                    qteState.mashTarget = Math.floor(getRandomInRange(qteTypes.MASH.requirements.min, qteTypes.MASH.requirements.max));
+                    qteState.mashCount = 0;
+                    document.getElementById('qte-type').textContent = '连打';
+                    document.getElementById('qte-difficulty').textContent = '中等';
+                    break;
+                    
+                case '长按':
+                    qteState.requiredKey = actionKeys[Math.floor(Math.random() * actionKeys.length)];
+                    qteState.holdTarget = getRandomInRange(qteTypes.HOLD.requirements.min, qteTypes.HOLD.requirements.max);
+                    qteState.holdProgress = 0;
+                    document.getElementById('qte-type').textContent = '长按';
+                    document.getElementById('qte-difficulty').textContent = '中等';
+                    break;
+                    
+                case '组合键':
+                    const keyCount = Math.floor(getRandomInRange(qteTypes.COMBO.requirements.min, qteTypes.COMBO.requirements.max));
+                    qteState.comboSequence = [];
+                    for (let i = 0; i < keyCount; i++) {
+                        qteState.comboSequence.push(actionKeys[Math.floor(Math.random() * actionKeys.length)]);
+                    }
+                    qteState.comboIndex = 0;
+                    document.getElementById('qte-type').textContent = '组合键';
+                    document.getElementById('qte-difficulty').textContent = '困难';
+                    break;
+            }
+        }
+
+        // 更新环境显示
+        function updateEnvironmentDisplay(environment) {
+            const environmentDisplay = document.getElementById('environment-display');
+            environmentDisplay.innerHTML = '';
+            
+            let displayHTML = '';
+            
+            if (Object.values(enemyTypes).includes(environment)) {
+                displayHTML = `
+                    <div class="enemy-display">
+                        <div class="enemy-icon">${environment.icon}</div>
+                        <div class="enemy-info">
+                            <div class="enemy-name">${environment.name}</div>
+                            <div class="enemy-desc">${environment.description}</div>
+                            <div class="enemy-health">
+                                <div class="enemy-health-fill" style="width: ${(environment.health / environment.health) * 100}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (Object.values(trapTypes).includes(environment)) {
+                displayHTML = `
+                    <div class="trap-display">
+                        <div class="trap-icon">${environment.icon}</div>
+                        <div class="trap-info">
+                            <div class="trap-name">${environment.name}</div>
+                            <div class="trap-desc">${environment.description}</div>
+                            <div class="environment-effects">
+                                <div class="environment-effect">伤害: ${environment.damage}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (Object.values(mechanismTypes).includes(environment)) {
+                displayHTML = `
+                    <div class="trap-display">
+                        <div class="trap-icon">${environment.icon}</div>
+                        <div class="trap-info">
+                            <div class="trap-name">${environment.name}</div>
+                            <div class="trap-desc">${environment.description}</div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            environmentDisplay.innerHTML = displayHTML;
+        }
+
+        // 获取环境描述
+        function getEnvironmentDescription(environment) {
+            if (Object.values(enemyTypes).includes(environment)) {
+                return `击败 ${environment.name} 获得 ${environment.score} 分`;
+            } else if (Object.values(trapTypes).includes(environment)) {
+                return `躲避 ${environment.name} 避免受到 ${environment.damage} 点伤害`;
+            } else if (Object.values(mechanismTypes).includes(environment)) {
+                return `激活 ${environment.name} 继续前进`;
+            }
+            return '';
+        }
+
+        // 更新QTE显示
+        function updateQteDisplay() {
+            const qtePrompt = document.getElementById('qte-prompt');
+            const specificDisplay = document.getElementById('qte-specific-display');
+            
+            // 更新提示信息
+            qtePrompt.textContent = getQtePrompt(qteState.type);
+            
+            // 根据QTE类型更新特定显示
+            specificDisplay.innerHTML = '';
+            
+            switch(qteState.type.name) {
+                case '单击':
+                    specificDisplay.innerHTML = `
+                        <div class="qte-requirements">
+                            <div class="qte-requirement">按键: ${qteState.requiredKey}</div>
+                            <div class="qte-requirement">时间: ${qteState.timeWindow.toFixed(1)}秒</div>
+                        </div>
+                    `;
+                    break;
+                    
+                case '连打':
+                    specificDisplay.innerHTML = `
+                        <div class="qte-mash-counter">${qteState.mashCount}/${qteState.mashTarget}</div>
+                        <div class="qte-requirements">
+                            <div class="qte-requirement">按键: ${qteState.requiredKey}</div>
+                            <div class="qte-requirement">目标: ${qteState.mashTarget}次</div>
+                            <div class="qte-requirement">时间: ${qteState.timeWindow.toFixed(1)}秒</div>
+                        </div>
+                    `;
+                    break;
+                    
+                case '长按':
+                    specificDisplay.innerHTML = `
+                        <div class="qte-hold-progress">
+                            <div class="qte-hold-fill" id="qte-hold-fill" style="width: 0%"></div>
+                        </div>
+                        <div class="qte-requirements">
+                            <div class="qte-requirement">按键: ${qteState.requiredKey}</div>
+                            <div class="qte-requirement">目标: ${qteState.holdTarget.toFixed(1)}秒</div>
+                        </div>
+                    `;
+                    break;
+                    
+                case '组合键':
+                    const comboKeysHTML = qteState.comboSequence.map((key, index) => {
+                        const className = index === qteState.comboIndex ? 'qte-combo-key active' : 
+                                        index < qteState.comboIndex ? 'qte-combo-key completed' : 'qte-combo-key';
+                        return `<div class="${className}">${key}</div>`;
+                    }).join('');
+                    
+                    specificDisplay.innerHTML = `
+                        <div class="qte-combo-sequence">
+                            ${comboKeysHTML}
+                        </div>
+                        <div class="qte-requirements">
+                            <div class="qte-requirement">时间: ${qteState.timeWindow.toFixed(1)}秒</div>
+                        </div>
+                    `;
+                    break;
+            }
+        }
+
+        // 获取QTE提示信息
+        function getQtePrompt(qteType) {
+            switch(qteType.name) {
+                case '单击': return `快速按下 ${qteState.requiredKey} 键`;
+                case '连打': return `快速连续按下 ${qteState.requiredKey} 键 ${qteState.mashTarget} 次`;
+                case '长按': return `按住 ${qteState.requiredKey} 键 ${qteState.holdTarget.toFixed(1)} 秒`;
+                case '组合键': return `按顺序按下指定按键`;
+                default: return '未知QTE类型';
+            }
+        }
+
+        // 开始QTE计时器
+        function startQTETimer() {
+            const timerFill = document.getElementById('qte-timer-fill');
+            const timeScale = gameState.bulletTimeActive ? 0.5 : 1.0;
+            
+            qteState.timer = setInterval(() => {
+                qteState.timeRemaining -= 0.1;
+                const percentage = (qteState.timeRemaining / qteState.timeWindow) * 100;
+                timerFill.style.width = `${percentage}%`;
+                
+                // 改变颜色基于剩余时间
+                if (percentage > 50) {
+                    timerFill.style.background = 'linear-gradient(90deg, #6ee2ff, #8a8aff)';
+                } else if (percentage > 25) {
+                    timerFill.style.background = 'linear-gradient(90deg, #ffcc66, #ffaa33)';
+                } else {
+                    timerFill.style.background = 'linear-gradient(90deg, #ff6e6e, #ff3333)';
+                }
+                
+                if (qteState.timeRemaining <= 0) {
+                    qteFailure("时间到!");
+                }
+            }, 100 * timeScale);
+        }
+
+        // 处理QTE输入
+        function processQTEInput(key) {
+            switch(qteState.type.name) {
+                case '单击':
+                    if (key === qteState.requiredKey) {
+                        qteSuccess();
+                    } else {
+                        qteFailure(`按错了键! 应该是 ${qteState.requiredKey}`);
+                    }
+                    break;
+                    
+                case '连打':
+                    if (key === qteState.requiredKey) {
+                        qteState.mashCount++;
+                        updateQteDisplay();
+                        
+                        if (qteState.mashCount >= qteState.mashTarget) {
+                            qteSuccess();
+                        }
+                    } else {
+                        qteFailure(`按错了键! 应该是 ${qteState.requiredKey}`);
+                    }
+                    break;
+                    
+                case '长按':
+                    if (key === qteState.requiredKey) {
+                        // 开始长按计时
+                        if (!qteState.holdInterval) {
+                            qteState.holdInterval = setInterval(() => {
+                                qteState.holdProgress += 0.1;
+                                const percentage = (qteState.holdProgress / qteState.holdTarget) * 100;
+                                document.getElementById('qte-hold-fill').style.width = `${Math.min(percentage, 100)}%`;
+                                
+                                if (qteState.holdProgress >= qteState.holdTarget) {
+                                    qteSuccess();
+                                }
+                            }, 100);
+                        }
+                    } else {
+                        qteFailure(`按错了键! 应该是 ${qteState.requiredKey}`);
+                    }
+                    break;
+                    
+                case '组合键':
+                    if (key === qteState.comboSequence[qteState.comboIndex]) {
+                        qteState.comboIndex++;
+                        updateQteDisplay();
+                        
+                        if (qteState.comboIndex >= qteState.comboSequence.length) {
+                            qteSuccess();
+                        }
+                    } else {
+                        qteFailure(`按错了键! 应该是 ${qteState.comboSequence[qteState.comboIndex]}`);
+                    }
+                    break;
+            }
+        }
+
+        // QTE成功
+        function qteSuccess() {
+            clearQTEState();
+            gameState.qteCompleted++;
+            gameState.totalQTECompleted++;
+            gameState.combo++;
+            
+            if (gameState.combo > gameState.maxCombo) {
+                gameState.maxCombo = gameState.combo;
+            }
+            
+            // 计算得分（考虑连击加成）
+            const baseScore = 10;
+            const comboMultiplier = 1 + (gameState.combo * 0.1);
+            const scoreEarned = Math.floor(baseScore * comboMultiplier);
+            
+            gameState.score += scoreEarned;
+            
+            // 根据环境类型处理额外效果
+            const environment = gameState.currentEnvironment;
+            if (Object.values(enemyTypes).includes(environment)) {
+                gameState.enemiesDefeated++;
+                logMessage(`击败 ${environment.name}! +${scoreEarned}分 (连击x${comboMultiplier.toFixed(1)})`, "success");
+                createDamagePopup(environment.score, document.querySelector('.enemy-display'));
+            } else if (Object.values(trapTypes).includes(environment)) {
+                gameState.trapsPassed++;
+                logMessage(`成功躲避 ${environment.name}! +${scoreEarned}分 (连击x${comboMultiplier.toFixed(1)})`, "success");
+            } else if (Object.values(mechanismTypes).includes(environment)) {
+                gameState.mechanismsActivated++;
+                logMessage(`成功激活 ${environment.name}! +${scoreEarned}分 (连击x${comboMultiplier.toFixed(1)})`, "success");
+            }
+            
+            updateStatusDisplay();
+            updateComboDisplay();
+            checkAchievements();
+            
+            // 短暂延迟后生成下一个QTE
+            setTimeout(() => {
+                generateNextQTE();
+            }, 1000);
+        }
+
+        // QTE失败
+        function qteFailure(reason) {
+            clearQTEState();
+            gameState.health--;
+            gameState.combo = 0;
+            
+            // 根据环境类型处理失败效果
+            const environment = gameState.currentEnvironment;
+            if (Object.values(enemyTypes).includes(environment)) {
+                logMessage(`被 ${environment.name} 攻击! ${reason} -1生命值`, "failure");
+            } else if (Object.values(trapTypes).includes(environment)) {
+                logMessage(`触发 ${environment.name}! ${reason} -1生命值`, "failure");
+            } else if (Object.values(mechanismTypes).includes(environment)) {
+                logMessage(`${environment.name} 激活失败! ${reason} -1生命值`, "failure");
+            }
+            
+            updateStatusDisplay();
+            updateComboDisplay();
+            
+            if (gameState.health <= 0) {
+                gameOver();
+                return;
+            }
+            
+            // 短暂延迟后生成下一个QTE
+            setTimeout(() => {
+                generateNextQTE();
+            }, 1000);
+        }
+
+        // 创建伤害弹出效果
+        function createDamagePopup(amount, element) {
+            const popup = document.createElement('div');
+            popup.className = 'damage-popup';
+            popup.textContent = `+${amount}`;
+            
+            const rect = element.getBoundingClientRect();
+            popup.style.left = `${rect.left + rect.width / 2}px`;
+            popup.style.top = `${rect.top}px`;
+            
+            document.body.appendChild(popup);
+            
+            setTimeout(() => {
+                document.body.removeChild(popup);
+            }, 1000);
+        }
+
+        // 清除QTE状态
+        function clearQTEState() {
+            if (qteState.timer) {
+                clearInterval(qteState.timer);
+                qteState.timer = null;
+            }
+            
+            if (qteState.holdInterval) {
+                clearInterval(qteState.holdInterval);
+                qteState.holdInterval = null;
+            }
+            
+            // 重置QTE状态
+            qteState = {
+                type: null,
+                requiredKey: null,
+                requiredKeys: [],
+                timeWindow: 0,
+                timeRemaining: 0,
+                timer: null,
+                mashCount: 0,
+                mashTarget: 0,
+                holdProgress: 0,
+                holdTarget: 0,
+                holdInterval: null,
+                comboIndex: 0,
+                comboSequence: []
+            };
+        }
+
+        // 使用子弹时间技能
+        function useBulletTime() {
+            if (gameState.skillUses >= 3 || gameState.bulletTimeActive) return;
+            
+            gameState.skillUses++;
+            gameState.bulletTimeActive = true;
+            
+            logMessage("子弹时间激活! QTE时间减慢50%", "skill");
+            updateStatusDisplay();
+            
+            // 子弹时间持续3秒
+            setTimeout(() => {
+                gameState.bulletTimeActive = false;
+                logMessage("子弹时间结束", "system");
+            }, 3000);
+        }
+
+        // 检查成就
+        function checkAchievements() {
+            for (const [key, achievement] of Object.entries(achievements)) {
+                if (!gameState.unlockedAchievements.has(key) && achievement.condition(gameState)) {
+                    unlockAchievement(key, achievement);
+                }
+            }
+        }
+
+        // 解锁成就
+        function unlockAchievement(key, achievement) {
+            gameState.unlockedAchievements.add(key);
+            
+            // 显示成就弹窗
+            const popup = document.createElement('div');
+            popup.className = 'achievement-popup';
+            popup.innerHTML = `
+                <div class="achievement-icon">${achievement.icon}</div>
+                <div class="achievement-title">成就解锁!</div>
+                <div class="achievement-desc">${achievement.name} - ${achievement.description}</div>
+            `;
+            
+            document.body.appendChild(popup);
+            
+            // 3秒后移除弹窗
+            setTimeout(() => {
+                document.body.removeChild(popup);
+            }, 3000);
+            
+            logMessage(`成就解锁: ${achievement.name} - ${achievement.description}`, "achievement");
+        }
+
+        // 关卡完成
+        function levelComplete() {
+            gameState.active = false;
+            gameState.level++;
+            
+            // 检查是否为完美通关（无伤）
+            if (gameState.health === 3) {
+                gameState.perfectRuns++;
+                logMessage("完美通关! 无伤完成关卡", "success");
+                checkAchievements();
+            }
+            
+            const levelBonus = gameState.level * 50;
+            gameState.score += levelBonus;
+            
+            logMessage(`关卡完成! 获得关卡奖励: +${levelBonus}分`, "success");
+            updateStatusDisplay();
+            
+            document.getElementById('start-level').disabled = false;
+            document.getElementById('next-level').disabled = false;
+        }
+
+        // 下一关卡
+        function nextLevel() {
+            startLevel();
+        }
+
+        // 游戏结束
+        function gameOver() {
+            gameState.active = false;
+            logMessage("游戏结束! 生命值耗尽", "failure");
+            
+            document.getElementById('start-level').disabled = false;
+            document.getElementById('next-level').disabled = true;
+        }
+
+        // 高亮显示被按下的输入卡片
+        function highlightInputCard(key) {
+            const cards = document.querySelectorAll('.input-card');
+            cards.forEach(card => {
+                if (card.dataset.key === key) {
+                    card.style.backgroundColor = 'rgba(80, 80, 160, 0.9)';
+                    card.style.borderColor = '#8a8aff';
+                    
+                    setTimeout(() => {
+                        card.style.backgroundColor = '';
+                        card.style.borderColor = '';
+                    }, 300);
+                }
+            });
+        }
+
+        // 添加日志消息
+        function logMessage(message, type = 'system') {
+            const outputLog = document.getElementById('output-log');
+            const logEntry = document.createElement('div');
+            logEntry.className = 'log-entry';
+            
+            const now = new Date();
+            const timeString = `${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
+            
+            let typeClass = '';
+            if (type === 'success') typeClass = 'log-success';
+            if (type === 'failure') typeClass = 'log-failure';
+            if (type === 'skill') typeClass = 'log-skill';
+            if (type === 'achievement') typeClass = 'log-achievement';
+            
+            logEntry.innerHTML = `
+                <span class="log-time">[${timeString}]</span>
+                <span class="${typeClass}">${message}</span>
+            `;
+            
+            outputLog.appendChild(logEntry);
+            outputLog.scrollTop = outputLog.scrollHeight;
+        }
+
+        // 获取随机范围内的值
+        function getRandomInRange(min, max) {
+            return min + Math.random() * (max - min);
+        }
+
+        // 初始化游戏
+        window.onload = initializeGame;
+    </script>
+</body>
+</html>
