@@ -75,14 +75,36 @@
 ```
 MyProject/
 ├── README_PORTFOLIO.md          # 本文件 — 项目总览与导航
+├── .gitattributes              # Git 属性配置
 ├── resume/
-│   └── resume_template.md       # 完整个人简历（包含教育、项目、技能）
+│   ├── resume_template.md       # 个人简历（教育 / 项目 / 技能）
+│   └── 简历.pdf                 # PDF 版本简历
 └── portfolio/
     ├── game_breakdowns/         # 游戏拆解案例
     │   ├── clash_of_clans/      # 《部落冲突》详细拆解（10 章完整分析）
+    │   │   ├── 策划拆解案.md     # 核心数值分析文档
+    │   │   ├── 部落冲突数值策划拆解.xmind  # 思维导图
+    │   │   ├── 部落冲突数值策划拆解.png    # 思维导图
+    │   │   └── 部落冲突系统与数值拆解.xlsx # 数据表格
     │   └── reign_of_thrones/    # 《王座陨落》拆解案
+    │       └── 王座陨落.md       # 案例拆解文档
     └── original_designs/        # 原创策划案例
-        └── project_original_01/ # 创意融合型游戏策划
+        └── project_original_01/ # 赛博跑酷 × QTE × 音游融合
+            ├── 游戏策划案.md     # 设计文档与核心系统
+            ├── demo.html         # 交互演示原型
+            ├── 数据.pdf          # 数据表
+            ├── 游戏运行逻辑图.xmind   # 系统流程图
+            ├── 游戏运行逻辑图.png     # 系统流程图
+            ├── 赛博跑酷QTE游戏系统总览.xmind  # 系统总览图
+            ├── 赛博跑酷QTE游戏系统总览.png    # 系统总览图
+            └── 文本/              # 游戏参数与机制定义
+                ├── Enemy_Types.txt
+                ├── Environment_Objects.txt
+                ├── Game_Parameters.txt
+                ├── Mechanism_Types.txt
+                ├── Player_Actions.txt
+                ├── QTE_Events.txt
+                └── Trap_Types.txt
 ```
 
 ---
