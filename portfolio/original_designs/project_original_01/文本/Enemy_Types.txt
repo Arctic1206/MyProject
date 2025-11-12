@@ -1,0 +1,9 @@
+EnemyType,EnemyName,Health,QTE_Type,RequiredHits,TimeWindow,ScoreValue,VisualPrefab,AttackPower,MoveSpeed,Description
+Drone,AttackDrone,1,Click,0,1200,28,Drone_Small,1,2.0,小型攻击无人机
+Drone,HeavyDrone,1,Mash,5,2000,32,Drone_Heavy,1,1.5,重型无人机
+Robot,DefenseBot,1,Click,0,1200,30,Robot_Standard,1,1.0,标准防御机器人
+Robot,AssaultBot,1,Mash,6,2200,35,Robot_Assault,1,1.2,突击机器人
+AutomatedWeapon,Turret,1,Click,0,1200,32,Turret_Static,1,0.0,固定炮塔
+AutomatedWeapon,MobileTurret,1,Mash,7,2300,38,Turret_Mobile,1,0.8,移动炮塔
+Drone,EliteDrone,1,Combo,0,2500,40,Drone_Elite,1,2.5,精英无人机
+Robot,GuardianBot,1,Combo,0,2600,42,Robot_Guardian,1,1.5,守卫机器人

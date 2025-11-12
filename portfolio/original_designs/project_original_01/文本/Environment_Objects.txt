@@ -1,0 +1,11 @@
+EnvID,EnvType,SubType,PositionX,PositionY,VisualPrefab,SuccessEffect,FailureEffect,MoveSpeed,SpawnOffset,Description
+2001,Trap,Spikes,0,0,SpikeTrap,RetractEffect,ImpaleEffect,5.0,-10,地面尖刺陷阱
+2002,Trap,Laser,0,2.5,LaserTrap,DisableEffect,ShockEffect,5.0,-10,水平激光陷阱
+2003,Enemy,Drone,0,3.0,Drone,DestroyEffect,AttackEffect,4.0,-12,攻击无人机
+2004,Enemy,Robot,0,1.5,Robot,DestroyEffect,AttackEffect,3.5,-12,防御机器人
+2005,Trap,Spikes,0,0,SpikeTrap,RetractEffect,ImpaleEffect,5.0,-10,地面尖刺陷阱
+2006,Mechanism,ElectronicDoor,0,0,ElectronicDoor,OpenEffect,ShockEffect,4.5,-15,电子安全门
+2007,Enemy,AutomatedWeapon,0,2.0,AutoWeapon,DestroyEffect,AttackEffect,3.0,-12,自动化武器
+2008,Trap,LaserNet,0,0,LaserNet,DisableEffect,ShockEffect,5.0,-10,复合激光网
+2009,Mechanism,Elevator,0,0,Elevator,ActivateEffect,CrashEffect,4.0,-15,升降平台
+2010,Mechanism,LowWall,0,0,LowWall,LowerEffect,CollisionEffect,4.5,-15,矮墙障碍

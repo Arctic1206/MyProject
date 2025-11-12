@@ -1,0 +1,9 @@
+TrapType,TrapName,QTE_Type,TimeWindow,VisualPrefab,WarningTime,Damage,ActivationRange,Description
+Spikes,GroundSpikes,Click,1400,Spikes_Ground,0.5,1,1.0,地面尖刺陷阱
+Spikes,WallSpikes,Click,1300,Spikes_Wall,0.4,1,0.8,墙面尖刺陷阱
+Laser,HorizontalLaser,Click,1300,Laser_Horizontal,0.6,1,1.2,水平激光
+Laser,VerticalLaser,Slide,1300,Laser_Vertical,0.5,1,1.0,垂直激光网
+Laser,LowLaser,Slide,1300,Laser_Low,0.4,1,0.9,低空激光
+Laser,LaserNet,Jump,1400,Laser_Net,0.7,1,1.5,复合激光网
+Laser,RotatingLaser,Hold,1600,Laser_Rotating,0.8,1,1.3,旋转激光
+Spikes,RetractableSpikes,Jump,1500,Spikes_Retractable,0.6,1,1.1,伸缩尖刺

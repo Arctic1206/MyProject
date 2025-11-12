@@ -1,0 +1,15 @@
+ParameterID,ParameterName,Value,Category,Description
+9001,TotalGameTime,60,Gameplay,总游戏时间(秒)
+9002,InitialHealth,3,Player,初始血量
+9003,BulletTimeCooldown,5,Skill,子弹时间冷却(秒)
+9004,BulletTimeDuration,3,Skill,子弹时间持续时间(秒)
+9005,BulletTimeSlowFactor,0.5,Skill,子弹时间减慢系数
+9006,HealthPenalty,50,Scoring,每次受伤扣分
+9007,SkillUsePenalty,30,Scoring,每次技能使用扣分
+9008,MaxSkillUses,3,Skill,最大技能使用次数
+9009,PlayerMoveSpeed,8,Player,玩家移动速度
+9010,BaseScore,600,Scoring,基础分数
+9011,EnemyScorePool,200,Scoring,敌人分数池
+9012,HealthScorePool,100,Scoring,血量分数池
+9013,SkillScorePool,100,Scoring,技能分数池
+9014,PerfectScore,1000,Scoring,完美分数

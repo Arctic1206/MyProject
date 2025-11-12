@@ -1,0 +1,9 @@
+MechType,MechName,QTE_Type,TimeWindow,VisualPrefab,ActivationTime,SuccessEffect,FailureEffect,Description
+ElectronicDoor,SecurityDoor,Combo,2500,Door_Security,1.0,OpenSmooth,ShockEffect,电子安全门
+Elevator,PlatformElevator,Combo,2600,Elevator_Platform,1.2,ActivateSmooth,CrashEffect,升降平台
+LowWall,BarrierWall,Combo,2400,Wall_Barrier,0.8,LowerSmooth,CollisionEffect,矮墙障碍
+Pipe,MaintenancePipe,Combo,2500,Pipe_Maintenance,1.0,OpenHatch,BlockEffect,维修管道
+LaserNet,SecurityGrid,Combo,2700,Grid_Security,1.3,DisableGrid,ShockEffect,安全激光网
+ElectronicDoor,BlastDoor,Combo,2800,Door_Blast,1.5,OpenHeavy,JamEffect,防爆门
+Gate,EnergyGate,Combo,2600,Gate_Energy,1.1,Deactivate,OverloadEffect,能量门
+Platform,MovingPlatform,Combo,2400,Platform_Moving,1.4,MoveSmooth,FallEffect,移动平台

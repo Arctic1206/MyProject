@@ -1,0 +1,11 @@
+EventID,TriggerTime,QTE_Type,InputKey,Duration,MashCount,EnvironmentID,SuccessAction,FailType,EnvironmentType,Difficulty,Weight,Description
+1001,0,Click,Space,1500,0,2001,Jump,GameOver,Trap,Normal,10,基础跳跃陷阱
+1002,0,Click,S,1300,0,2002,Slide,GameOver,Trap,Normal,10,基础滑铲陷阱
+1003,0,Click,J,1200,0,2003,Attack,Damage,Enemy,Normal,10,基础攻击敌人
+1004,0,Mash,J,2000,5,2004,Attack,Damage,Enemy,Hard,8,连打攻击敌人
+1005,0,Hold,Space,1600,0,2005,Jump,GameOver,Trap,Hard,7,长按跳跃陷阱
+1006,0,Combo,Space-J,2500,0,2006,JumpAttack,GameOver,Mechanism,Expert,5,跳跃攻击机关
+1007,0,Combo,S-J,2600,0,2007,SlideAttack,GameOver,Mechanism,Expert,5,滑铲攻击机关
+1008,0,Mash,Space,2200,6,2008,Jump,GameOver,Trap,Hard,6,连打跳跃陷阱
+1009,0,Hold,S,1800,0,2009,Slide,GameOver,Trap,Hard,7,长按滑铲陷阱
+1010,0,Click,D,1400,0,2010,Dash,GameOver,Trap,Normal,9,冲刺陷阱

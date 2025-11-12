@@ -1,0 +1,11 @@
+ActionID,ActionName,InputKey,AnimationClip,VisualEffect,SoundEffect,MoveDistance,InvincibleTime,Cooldown,Description
+3001,StandardJump,Space,Jump_Anim,JumpVFX,JumpSFX,2.0,0.5,0,标准跳跃
+3002,Slide,S,Slide_Anim,SlideVFX,SlideSFX,1.5,0.3,0,滑铲躲避
+3003,Attack,J,Attack_Anim,AttackVFX,AttackSFX,0.0,0.2,0,基础攻击
+3004,Dash,D,Dash_Anim,DashVFX,DashSFX,3.0,0.4,3.0,短距冲刺
+3005,LongJump,Space,LongJump_Anim,LongJumpVFX,JumpSFX,3.0,0.6,0,长距离跳跃
+3006,ExtendedSlide,S,ExtSlide_Anim,ExtSlideVFX,SlideSFX,2.5,0.5,0,延长滑铲
+3007,JumpAttack,Space-J,JumpAtk_Anim,JumpAtkVFX,AtkJumpSFX,2.5,0.6,0,跳跃攻击
+3008,SlideAttack,S-J,SlideAtk_Anim,SlideAtkVFX,AtkSlideSFX,2.0,0.5,0,滑铲攻击
+3009,BulletTime,Shift,SlowMo_Anim,TimeWarpVFX,TimeWarpSFX,0.0,0.0,5.0,子弹时间
+3010,DoubleJump,Space,DoubleJump_Anim,DoubleJumpVFX,JumpSFX,4.0,0.7,0,二段跳跃
